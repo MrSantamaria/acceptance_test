@@ -127,8 +127,10 @@ func main() {
 	// creates the clientset
 	_, err = kubernetes.NewForConfig(config)
 	if err != nil {
+		fmt.Printf("Clientset failed, err: %v\n", err)
 		panic(err.Error())
 	}
+	fmt.Println("Clientset set up successfully")
 
 	// Moved this into a function underneath just to not lose the progress.
 	//acceptance_test_through_ocm(ctx, ocmBinaryPath)
