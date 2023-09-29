@@ -134,6 +134,7 @@ func main() {
 
 	// Set the KUBECONFIG environment variable
 	os.Setenv("KUBECONFIG", config.BearerTokenFile)
+	fmt.Printf("KUBECONFIG set to %s\n", config.BearerTokenFile)
 
 	// Moved this into a function underneath just to not lose the progress.
 	//acceptance_test_through_ocm(ctx, ocmBinaryPath)
