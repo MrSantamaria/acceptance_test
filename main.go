@@ -132,6 +132,9 @@ func main() {
 	}
 	fmt.Println("Clientset set up successfully")
 
+	// Set the KUBECONFIG environment variable
+	os.Setenv("KUBECONFIG", config.BearerTokenFile)
+
 	// Moved this into a function underneath just to not lose the progress.
 	//acceptance_test_through_ocm(ctx, ocmBinaryPath)
 
