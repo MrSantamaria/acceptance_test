@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/MrSantamaria/acceptance_test/pkg/helpers"
@@ -146,6 +147,19 @@ func main() {
 }
 
 func acceptance_test_through_hive(ctx context.Context, ocmBinaryPath string) {
+
+	cmd := exec.Command(
+		"oc",
+		"get",
+		"nodes")
+
+	// Capture the command output
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	fmt.Println(string(output))
 
 	// These commands run in the context of the cluster that is running the acceptance test.
 	// For Dustin - Since this runs in a Hive in production can we load a kubeconfig unto the pod through a configMap?
