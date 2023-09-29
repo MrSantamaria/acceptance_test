@@ -1,0 +1,3 @@
+NAMESPACE                                          NAME              INFRAID                 PLATFORM   REGION      VERSION   CLUSTERTYPE    PROVISIONSTATUS   POWERSTATE   AGE
+uhc-integration-22d7e79p2dm90m79e0kfi4q9vocnne89   hs-sc-evsehq8n0   hs-sc-evsehq8n0-8x6gs   aws        us-west-2   4.12.24   managed-byoc   Provisioned       Running      139d
+uhc-integration-22d8923mg9d1ep5i442j86n10pdi0aqm   hs-mc-evsehqjig   hs-mc-evsehqjig-qnvrv   aws        us-west-2   4.12.24   managed-byoc   Provisioned       Running      138d

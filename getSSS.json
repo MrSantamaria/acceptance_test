@@ -1,0 +1,216 @@
+{
+    "apiVersion": "hive.openshift.io/v1",
+    "kind": "SelectorSyncSet",
+    "metadata": {
+        "annotations": {
+            "component-display-name": "AWS VPCE Operator",
+            "component-name": "aws-vpce-operator-us-west-2-main",
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"hive.openshift.io/v1\",\"kind\":\"SelectorSyncSet\",\"metadata\":{\"annotations\":{\"component-display-name\":\"AWS VPCE Operator\",\"component-name\":\"aws-vpce-operator-us-west-2-main\",\"qontract.caller_name\":\"saas-avo-hypershift\",\"qontract.integration\":\"openshift-saas-deploy\",\"qontract.integration_version\":\"0.1.0\",\"qontract.sha256sum\":\"48a38efb8b6bb1b99e0467749706ac712a8695c273d9ef17e9c2db97e361cbce\",\"qontract.update\":\"2023-07-28T15:33:07\",\"telemeter-query\":\"csv_succeeded{_id=\\\"$CLUSTER_ID\\\",name=~\\\"aws-vpce-operator.*\\\",exported_namespace=~\\\"openshift-.*\\\",namespace=\\\"openshift-operator-lifecycle-manager\\\"} == 1\"},\"labels\":{\"managed.openshift.io/gitHash\":\"staging-a39be7d\",\"managed.openshift.io/gitRepoName\":\"aws-vpce-operator\",\"managed.openshift.io/osd\":\"true\"},\"name\":\"aws-vpce-operator-hypershift-sss-us-west-2-main\"},\"spec\":{\"clusterDeploymentSelector\":{\"matchExpressions\":[{\"key\":\"ext-hypershift.openshift.io/cluster-region\",\"operator\":\"In\",\"values\":[\"us-west-2\"]},{\"key\":\"ext-hypershift.openshift.io/cluster-sector\",\"operator\":\"In\",\"values\":[\"main\"]},{\"key\":\"ext-hypershift.openshift.io/cluster-type\",\"operator\":\"In\",\"values\":[\"management-cluster\",\"service-cluster\"]},{\"key\":\"api.openshift.com/fedramp\",\"operator\":\"NotIn\",\"values\":[\"true\"]}]},\"resourceApplyMode\":\"Sync\",\"resources\":[{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"labels\":{\"openshift.io/cluster-monitoring\":\"true\"},\"name\":\"openshift-aws-vpce-operator\"}},{\"apiVersion\":\"cloudcredential.openshift.io/v1\",\"kind\":\"CredentialsRequest\",\"metadata\":{\"name\":\"avo-aws-iam-user-creds\",\"namespace\":\"openshift-aws-vpce-operator\"},\"spec\":{\"providerSpec\":{\"apiVersion\":\"cloudcredential.openshift.io/v1\",\"kind\":\"AWSProviderSpec\",\"statementEntries\":[{\"action\":[\"ec2:CreateTags\",\"ec2:DescribeSubnets\",\"ec2:CreateSecurityGroup\",\"ec2:DeleteSecurityGroup\",\"ec2:DescribeSecurityGroups\",\"ec2:AuthorizeSecurityGroupIngress\",\"ec2:AuthorizeSecurityGroupEgress\",\"ec2:DescribeSecurityGroupRules\",\"ec2:CreateVpcEndpoint\",\"ec2:DeleteVpcEndpoints\",\"ec2:DescribeVpcEndpoints\",\"ec2:DescribeVpcs\",\"ec2:ModifyVpcEndpoint\",\"ec2:DescribeVpcEndpointServices\",\"route53:ChangeResourceRecordSets\",\"route53:ListHostedZonesByVPC\",\"route53:ListResourceRecordSets\",\"route53:ListTagsForResource\",\"route53:GetHostedZone\",\"route53:CreateHostedZone\",\"route53:DeleteHostedZone\",\"route53:ChangeTagsForResource\",\"route53:CreateVpcAssociationAuthorization\",\"sts:AssumeRole\",\"ec2:DescribeVpcEndpointConnections\",\"ec2:AcceptVpcEndpointConnections\"],\"effect\":\"Allow\",\"resource\":\"*\"}]},\"secretRef\":{\"name\":\"avo-aws-iam-user-creds\",\"namespace\":\"openshift-aws-vpce-operator\"}}},{\"apiVersion\":\"operators.coreos.com/v1alpha1\",\"kind\":\"CatalogSource\",\"metadata\":{\"labels\":{\"opsrc-datastore\":\"true\",\"opsrc-provider\":\"redhat\"},\"name\":\"aws-vpce-operator-registry\",\"namespace\":\"openshift-aws-vpce-operator\"},\"spec\":{\"affinity\":{\"nodeAffinity\":{\"preferredDuringSchedulingIgnoredDuringExecution\":[{\"preference\":{\"matchExpressions\":[{\"key\":\"node-role.kubernetes.io/infra\",\"operator\":\"Exists\"}]},\"weight\":1}]}},\"displayName\":\"aws-vpce-operator\",\"grpcPodConfig\":{\"nodeSelector\":{\"node-role.kubernetes.io\":\"infra\"},\"securityContextConfig\":\"restricted\",\"tolerations\":[{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/infra\",\"operator\":\"Exists\"}]},\"icon\":{\"base64data\":\"\",\"mediatype\":\"\"},\"image\":\"quay.io/app-sre/aws-vpce-operator-registry@sha256:a9994fd390c3f2f9f9ec05974fa7871c60996c352009515c9938e69f0a6b28d3\",\"publisher\":\"Red Hat\",\"sourceType\":\"grpc\",\"tolerations\":[{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/infra\",\"operator\":\"Exists\"}]}},{\"apiVersion\":\"operators.coreos.com/v1\",\"kind\":\"OperatorGroup\",\"metadata\":{\"annotations\":{\"olm.operatorframework.io/exclude-global-namespace-resolution\":\"true\"},\"name\":\"aws-vpce-operator\",\"namespace\":\"openshift-aws-vpce-operator\"},\"spec\":{\"targetNamespaces\":[\"openshift-aws-vpce-operator\"]}},{\"apiVersion\":\"operators.coreos.com/v1alpha1\",\"kind\":\"Subscription\",\"metadata\":{\"name\":\"aws-vpce-operator\",\"namespace\":\"openshift-aws-vpce-operator\"},\"spec\":{\"channel\":\"staging\",\"name\":\"aws-vpce-operator\",\"source\":\"aws-vpce-operator-registry\",\"sourceNamespace\":\"openshift-aws-vpce-operator\"}}]}}\n",
+            "qontract.caller_name": "saas-avo-hypershift",
+            "qontract.integration": "openshift-saas-deploy",
+            "qontract.integration_version": "0.1.0",
+            "qontract.sha256sum": "48a38efb8b6bb1b99e0467749706ac712a8695c273d9ef17e9c2db97e361cbce",
+            "qontract.update": "2023-07-28T15:33:07",
+            "telemeter-query": "csv_succeeded{_id=\"$CLUSTER_ID\",name=~\"aws-vpce-operator.*\",exported_namespace=~\"openshift-.*\",namespace=\"openshift-operator-lifecycle-manager\"} == 1"
+        },
+        "creationTimestamp": "2023-07-11T22:21:52Z",
+        "generation": 9,
+        "labels": {
+            "managed.openshift.io/gitHash": "staging-a39be7d",
+            "managed.openshift.io/gitRepoName": "aws-vpce-operator",
+            "managed.openshift.io/osd": "true"
+        },
+        "name": "aws-vpce-operator-hypershift-sss-us-west-2-main",
+        "resourceVersion": "1566811214",
+        "uid": "3df2f5a5-8015-4c1e-8adf-80f46c7a4fbc"
+    },
+    "spec": {
+        "clusterDeploymentSelector": {
+            "matchExpressions": [
+                {
+                    "key": "ext-hypershift.openshift.io/cluster-region",
+                    "operator": "In",
+                    "values": [
+                        "us-west-2"
+                    ]
+                },
+                {
+                    "key": "ext-hypershift.openshift.io/cluster-sector",
+                    "operator": "In",
+                    "values": [
+                        "main"
+                    ]
+                },
+                {
+                    "key": "ext-hypershift.openshift.io/cluster-type",
+                    "operator": "In",
+                    "values": [
+                        "management-cluster",
+                        "service-cluster"
+                    ]
+                },
+                {
+                    "key": "api.openshift.com/fedramp",
+                    "operator": "NotIn",
+                    "values": [
+                        "true"
+                    ]
+                }
+            ]
+        },
+        "resourceApplyMode": "Sync",
+        "resources": [
+            {
+                "apiVersion": "v1",
+                "kind": "Namespace",
+                "metadata": {
+                    "labels": {
+                        "openshift.io/cluster-monitoring": "true"
+                    },
+                    "name": "openshift-aws-vpce-operator"
+                }
+            },
+            {
+                "apiVersion": "cloudcredential.openshift.io/v1",
+                "kind": "CredentialsRequest",
+                "metadata": {
+                    "name": "avo-aws-iam-user-creds",
+                    "namespace": "openshift-aws-vpce-operator"
+                },
+                "spec": {
+                    "providerSpec": {
+                        "apiVersion": "cloudcredential.openshift.io/v1",
+                        "kind": "AWSProviderSpec",
+                        "statementEntries": [
+                            {
+                                "action": [
+                                    "ec2:CreateTags",
+                                    "ec2:DescribeSubnets",
+                                    "ec2:CreateSecurityGroup",
+                                    "ec2:DeleteSecurityGroup",
+                                    "ec2:DescribeSecurityGroups",
+                                    "ec2:AuthorizeSecurityGroupIngress",
+                                    "ec2:AuthorizeSecurityGroupEgress",
+                                    "ec2:DescribeSecurityGroupRules",
+                                    "ec2:CreateVpcEndpoint",
+                                    "ec2:DeleteVpcEndpoints",
+                                    "ec2:DescribeVpcEndpoints",
+                                    "ec2:DescribeVpcs",
+                                    "ec2:ModifyVpcEndpoint",
+                                    "ec2:DescribeVpcEndpointServices",
+                                    "route53:ChangeResourceRecordSets",
+                                    "route53:ListHostedZonesByVPC",
+                                    "route53:ListResourceRecordSets",
+                                    "route53:ListTagsForResource",
+                                    "route53:GetHostedZone",
+                                    "route53:CreateHostedZone",
+                                    "route53:DeleteHostedZone",
+                                    "route53:ChangeTagsForResource",
+                                    "route53:CreateVpcAssociationAuthorization",
+                                    "sts:AssumeRole",
+                                    "ec2:DescribeVpcEndpointConnections",
+                                    "ec2:AcceptVpcEndpointConnections"
+                                ],
+                                "effect": "Allow",
+                                "resource": "*"
+                            }
+                        ]
+                    },
+                    "secretRef": {
+                        "name": "avo-aws-iam-user-creds",
+                        "namespace": "openshift-aws-vpce-operator"
+                    }
+                }
+            },
+            {
+                "apiVersion": "operators.coreos.com/v1alpha1",
+                "kind": "CatalogSource",
+                "metadata": {
+                    "labels": {
+                        "opsrc-datastore": "true",
+                        "opsrc-provider": "redhat"
+                    },
+                    "name": "aws-vpce-operator-registry",
+                    "namespace": "openshift-aws-vpce-operator"
+                },
+                "spec": {
+                    "affinity": {
+                        "nodeAffinity": {
+                            "preferredDuringSchedulingIgnoredDuringExecution": [
+                                {
+                                    "preference": {
+                                        "matchExpressions": [
+                                            {
+                                                "key": "node-role.kubernetes.io/infra",
+                                                "operator": "Exists"
+                                            }
+                                        ]
+                                    },
+                                    "weight": 1
+                                }
+                            ]
+                        }
+                    },
+                    "displayName": "aws-vpce-operator",
+                    "grpcPodConfig": {
+                        "nodeSelector": {
+                            "node-role.kubernetes.io": "infra"
+                        },
+                        "securityContextConfig": "restricted",
+                        "tolerations": [
+                            {
+                                "effect": "NoSchedule",
+                                "key": "node-role.kubernetes.io/infra",
+                                "operator": "Exists"
+                            }
+                        ]
+                    },
+                    "icon": {
+                        "base64data": "",
+                        "mediatype": ""
+                    },
+                    "image": "quay.io/app-sre/aws-vpce-operator-registry@sha256:a9994fd390c3f2f9f9ec05974fa7871c60996c352009515c9938e69f0a6b28d3",
+                    "publisher": "Red Hat",
+                    "sourceType": "grpc",
+                    "tolerations": [
+                        {
+                            "effect": "NoSchedule",
+                            "key": "node-role.kubernetes.io/infra",
+                            "operator": "Exists"
+                        }
+                    ]
+                }
+            },
+            {
+                "apiVersion": "operators.coreos.com/v1",
+                "kind": "OperatorGroup",
+                "metadata": {
+                    "annotations": {
+                        "olm.operatorframework.io/exclude-global-namespace-resolution": "true"
+                    },
+                    "name": "aws-vpce-operator",
+                    "namespace": "openshift-aws-vpce-operator"
+                },
+                "spec": {
+                    "targetNamespaces": [
+                        "openshift-aws-vpce-operator"
+                    ]
+                }
+            },
+            {
+                "apiVersion": "operators.coreos.com/v1alpha1",
+                "kind": "Subscription",
+                "metadata": {
+                    "name": "aws-vpce-operator",
+                    "namespace": "openshift-aws-vpce-operator"
+                },
+                "spec": {
+                    "channel": "staging",
+                    "name": "aws-vpce-operator",
+                    "source": "aws-vpce-operator-registry",
+                    "sourceNamespace": "openshift-aws-vpce-operator"
+                }
+            }
+        ]
+    }
+}

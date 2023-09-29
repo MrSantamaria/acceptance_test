@@ -1,0 +1,5 @@
+# editor metadata
+.vscode/
+
+# macOS
+.DS_Store
