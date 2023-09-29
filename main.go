@@ -15,7 +15,6 @@ import (
 
 // Trigger quay build
 var (
-	ocmToken       = ""
 	repoOwner      = "openshift-online"
 	repoName       = "ocm-cli"
 	imageTag       = "e3cc340"            //This image tag is the latest image tag for the aws-vpce-operator matching app-interface.
@@ -37,6 +36,13 @@ var (
 */
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Missing arguments")
+		os.Exit(1)
+	}
+
+	ocmToken := os.Args[1]
+
 	// This first part will be used to set up the environment for the test
 	// Everything will run from a new directory created in the system's temporary directory
 	// We will download OCM and OC binaries to this directory and use them for the test
