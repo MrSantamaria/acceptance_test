@@ -147,16 +147,6 @@ func GetSelectorSyncSetLabels(ctx context.Context, sss string) (string, error) {
 
 	var sssData SelectorSyncSet
 
-	// Needs to be deleted for actual usage
-	// For testing purpose this json file is an output captured from OC to bypass the need for the above oc command
-	// output, err = ioutil.ReadFile("/Users/dsantama/Documents/GitHub/acceptance_test/getSSS.json")
-	// if err != nil {
-	// 	return "", fmt.Errorf("error reading file: %v", err)
-	// }
-	//
-	//
-	//
-
 	err = json.Unmarshal(output, &sssData)
 	if err != nil {
 		return "", fmt.Errorf("error parsing JSON: %v", err)
