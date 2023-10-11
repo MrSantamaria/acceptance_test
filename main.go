@@ -6,6 +6,7 @@ import (
 
 	"github.com/openshift/hive/apis"
 	v1 "github.com/openshift/hive/apis/hive/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -29,21 +30,24 @@ func main() {
 	}
 
 	sss := &v1.SelectorSyncSet{}
+	//clusterDeploymentsList := &v1.ClusterDeploymentList{}
+	//clusterDeployments := &v1.ClusterDeployment{}
 
 	err = customClient.Get(context.TODO(), client.ObjectKey{Namespace: "cluster-scope", Name: "aws-vpce-operator-hypershift-sss-us-west-2-main"}, sss)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	fmt.Println("--- SelectorSyncSet ---")
-	fmt.Println(sss)
-
-	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchLabels ---")
-	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchLabels)
-
 	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchExpressions ---")
 	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchExpressions)
 
+	labelSet := labels.Set{}
+	for _, matchExpression := range sss.Spec.ClusterDeploymentSelector.MatchExpressions {
+		labelSet[matchExpression.Key] = matchExpression.Values[0]
+	}
+
+	// print out the labelSet and the value of the labelSet
+	fmt.Println("--- labelSet ---")
+	fmt.Println(labelSet)
 }
 
 // GetClient returns a new dynamic controller-runtime client.
