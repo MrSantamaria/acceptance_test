@@ -70,7 +70,7 @@ func main() {
 	fmt.Println("--- labelSelectors ---")
 	fmt.Println(labelSelectors)
 
-	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: &sss.Spec.ClusterDeploymentSelector})
+	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labelSelectors})
 	if err != nil {
 		fmt.Println(err)
 	}
