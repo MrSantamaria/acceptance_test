@@ -6,8 +6,10 @@ import (
 
 	"github.com/openshift/hive/apis"
 	v1 "github.com/openshift/hive/apis/hive/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/selection"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -40,12 +42,35 @@ func main() {
 	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchExpressions ---")
 	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchExpressions)
 
-	labelSelectors := labels.SelectorFromSet(sss.Spec.ClusterDeploymentSelector.MatchLabels)
-	// Print out LabelSelectors
-	fmt.Println("--- LabelSelectors ---")
+	labelSelectors := labels.NewSelector()
+	for _, matchExpression := range sss.Spec.ClusterDeploymentSelector.MatchExpressions {
+		// Convert metav1.LabelSelectorRequirement to labels.Requirement
+		var operator selection.Operator
+		switch matchExpression.Operator {
+		case metav1.LabelSelectorOpIn:
+			operator = selection.In
+		case metav1.LabelSelectorOpNotIn:
+			operator = selection.NotIn
+		case metav1.LabelSelectorOpExists:
+			operator = selection.Exists
+		case metav1.LabelSelectorOpDoesNotExist:
+			operator = selection.DoesNotExist
+		default:
+			fmt.Println("Unknown operator")
+		}
+
+		requirement, err := labels.NewRequirement(matchExpression.Key, operator, matchExpression.Values)
+		if err != nil {
+			fmt.Println(err)
+		}
+		labelSelectors = labelSelectors.Add(*requirement)
+	}
+
+	//Print out the labelSelectors
+	fmt.Println("--- labelSelectors ---")
 	fmt.Println(labelSelectors)
 
-	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labels.SelectorFromSet(sss.Spec.ClusterDeploymentSelector.MatchLabels)})
+	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: &sss.Spec.ClusterDeploymentSelector})
 	if err != nil {
 		fmt.Println(err)
 	}
