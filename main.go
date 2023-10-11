@@ -38,8 +38,12 @@ func main() {
 	fmt.Println("--- SelectorSyncSet ---")
 	fmt.Println(sss)
 
-	fmt.Println("--- SelectorSyncSet.Spec ---")
-	fmt.Println(sss.Spec)
+	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchLabels ---")
+	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchLabels)
+
+	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchExpressions ---")
+	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchExpressions)
+
 }
 
 // GetClient returns a new dynamic controller-runtime client.
