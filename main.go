@@ -35,8 +35,11 @@ func main() {
 		fmt.Println(err)
 	}
 
+	fmt.Println("--- SelectorSyncSet ---")
 	fmt.Println(sss)
 
+	fmt.Println("--- SelectorSyncSet.Spec ---")
+	fmt.Println(sss.Spec)
 }
 
 // GetClient returns a new dynamic controller-runtime client.
@@ -60,4 +63,12 @@ func GetClientConfig() (*restclient.Config, error) {
 	rules := clientcmd.NewDefaultClientConfigLoadingRules()
 	kubeconfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(rules, &clientcmd.ConfigOverrides{})
 	return kubeconfig.ClientConfig()
+}
+
+// Create a mock object that satisfies the v1.SelectorSyncSet interface
+type MockSelectorSyncSet struct {
+	// Define fields that match the structure of v1.SelectorSyncSet
+	Field1 string
+	Field2 int
+	// Add other fields as needed
 }
