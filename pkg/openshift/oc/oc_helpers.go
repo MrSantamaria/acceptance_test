@@ -49,7 +49,7 @@ type ClusterDeployment struct {
 
 // These functions are consumed post the backplaneLogin fucntion is called
 
-func GetClusterServiceVersionPhaseVersionShortSha(ctx context.Context, clusterID, operatorName string) (string, string, string, error) {
+func GetClusterServiceVersionPhaseVersionShortSha(ctx context.Context, operatorName string) (string, string, string, error) {
 	// Prepare the 'oc' command to fetch CSV data
 	//namespace := fmt.Sprintf("-n openshift-%s", operatorName)
 	//label := fmt.Sprintf("-l operators.coreos.com/%s.openshift-%s=", operatorName, operatorName)
