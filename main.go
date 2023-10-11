@@ -30,7 +30,7 @@ func main() {
 	}
 
 	sss := &v1.SelectorSyncSet{}
-	//clusterDeploymentsList := &v1.ClusterDeploymentList{}
+	clusterDeploymentsList := &v1.ClusterDeploymentList{}
 	//clusterDeployments := &v1.ClusterDeployment{}
 
 	err = customClient.Get(context.TODO(), client.ObjectKey{Namespace: "cluster-scope", Name: "aws-vpce-operator-hypershift-sss-us-west-2-main"}, sss)
@@ -40,14 +40,14 @@ func main() {
 	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchExpressions ---")
 	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchExpressions)
 
-	labelSet := labels.Set{}
-	for _, matchExpression := range sss.Spec.ClusterDeploymentSelector.MatchExpressions {
-		labelSet[matchExpression.Key] = matchExpression.Values[0]
+	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labels.SelectorFromSet(sss.Spec.ClusterDeploymentSelector.MatchLabels)})
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	// print out the labelSet and the value of the labelSet
-	fmt.Println("--- labelSet ---")
-	fmt.Println(labelSet)
+	fmt.Println("--- ClusterDeploymentList.Items ---")
+	fmt.Println(clusterDeploymentsList.Items)
+
 }
 
 // GetClient returns a new dynamic controller-runtime client.
