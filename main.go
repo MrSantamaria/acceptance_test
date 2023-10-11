@@ -66,17 +66,27 @@ func main() {
 		labelSelectors = labelSelectors.Add(*requirement)
 	}
 
+	labelSelectors2, err := metav1.LabelSelectorAsSelector(&sss.Spec.ClusterDeploymentSelector)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	//Print out the labelSelectors
 	fmt.Println("--- labelSelectors ---")
 	fmt.Println(labelSelectors)
 
-	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labelSelectors})
+	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labelSelectors2})
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Println("--- ClusterDeploymentList.Items ---")
 	fmt.Println(clusterDeploymentsList.Items)
+
+	for _, clusterDeployment := range clusterDeploymentsList.Items {
+		fmt.Println("--- ClusterDeployment ---")
+		fmt.Println(clusterDeployment.Name)
+	}
 
 }
 
