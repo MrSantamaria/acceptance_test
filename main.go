@@ -40,6 +40,8 @@ func main() {
 	fmt.Println("--- SelectorSyncSet.ClusterDeploymentSelector.MatchExpressions ---")
 	fmt.Println(sss.Spec.ClusterDeploymentSelector.MatchExpressions)
 
+	fmt.Println(labels.SelectorFromSet(sss.Spec.ClusterDeploymentSelector.MatchLabels))
+
 	err = customClient.List(context.TODO(), clusterDeploymentsList, &client.ListOptions{LabelSelector: labels.SelectorFromSet(sss.Spec.ClusterDeploymentSelector.MatchLabels)})
 	if err != nil {
 		fmt.Println(err)
