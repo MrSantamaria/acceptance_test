@@ -15,7 +15,7 @@ RUN go env
 RUN go build -o /app/acceptance-test
 
 ### STAGE 3: Final ###
-FROM quay.io/openshift/origin-tools:latest
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 # Copy the Go binary from the build stage to the final image
 COPY --from=build /app/acceptance-test .

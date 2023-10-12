@@ -21,7 +21,7 @@ import (
 var (
 	repoOwner = "openshift-online"
 	repoName  = "ocm-cli"
-	imageTag  = "e3cc340"            //This image tag is the latest image tag for the aws-vpce-operator matching app-interface.
+	imageTag  = "c599108"            //This image tag is the latest image tag for the aws-vpce-operator matching app-interface.
 	ctx       = context.Background() // Ctx as a placeholder this is meant for the test_main class once we are ready to test.
 	//pairedSSS      = "aws-vpce-operator-hypershift-sss-us-west-2-main"
 	//namespace      = "cluster-scope"
@@ -194,12 +194,4 @@ func GetClientConfig() (*restclient.Config, error) {
 	rules := clientcmd.NewDefaultClientConfigLoadingRules()
 	kubeconfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(rules, &clientcmd.ConfigOverrides{})
 	return kubeconfig.ClientConfig()
-}
-
-// Create a mock object that satisfies the v1.SelectorSyncSet interface
-type MockSelectorSyncSet struct {
-	// Define fields that match the structure of v1.SelectorSyncSet
-	Field1 string
-	Field2 int
-	// Add other fields as needed
 }
