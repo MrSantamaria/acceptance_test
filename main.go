@@ -33,6 +33,12 @@ func main() {
 	ocmToken := os.Getenv("OCM_TOKEN")
 	//imageTag := os.Getenv("IMAGE_TAG")
 
+	// Install openshift-cli
+	if !ocCli.CliCheck() {
+		fmt.Println("Error: oc-cli is not installed")
+		os.Exit(1)
+	}
+
 	// All the old code to set up OCM and OC
 	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {

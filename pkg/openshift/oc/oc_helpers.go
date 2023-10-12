@@ -47,12 +47,7 @@ type ClusterDeployment struct {
 	// Add other fields as needed
 }
 
-// These functions are consumed post the backplaneLogin fucntion is called
-
 func GetClusterServiceVersionPhaseVersionShortSha(ctx context.Context, operatorName string) (string, string, string, error) {
-	// Prepare the 'oc' command to fetch CSV data
-	//namespace := fmt.Sprintf("-n openshift-%s", operatorName)
-	//label := fmt.Sprintf("-l operators.coreos.com/%s.openshift-%s=", operatorName, operatorName)
 	cmd := exec.CommandContext(ctx,
 		"oc",
 		"get",
@@ -96,15 +91,10 @@ func GetClusterServiceVersionPhaseVersionShortSha(ctx context.Context, operatorN
 func IsClusterConnected() bool {
 	cmd := exec.Command("oc", "whoami")
 
-	// Redirect the command output to the current process's standard output
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	// Run the command, and capture the output
 	err := cmd.Run()
-
-	// If there is an error, it means the 'oc' command failed to run,
-	// which indicates no connection to the cluster.
 	if err != nil {
 		return false
 	}
@@ -181,16 +171,6 @@ func GetClusterDeployments(ctx context.Context, labels string) ([]string, error)
 		return nil, fmt.Errorf("error executing oc get clusterdeployments: %v", err)
 	}
 
-	// Needs to be deleted for actual usage
-	// For testing purpose this file is an output captured from OC to bypass the need for the above oc command
-	// output, err = ioutil.ReadFile("/Users/dsantama/Documents/GitHub/acceptance_test/getCD")
-	// if err != nil {
-	// 	return nil, fmt.Errorf("error reading file: %v", err)
-	// }
-	//
-	//
-	//
-
 	// Parse the Comma Separated Values (CSV) output
 	r := csv.NewReader(strings.NewReader(string(output)))
 	records, err := r.ReadAll()
@@ -214,12 +194,10 @@ func CliCheck() bool {
 		return true
 	}
 
-	fmt.Println("oc is not installed")
+	fmt.Println("oc is not installed, attempting to install via Homebrew")
+	fmt.Println("https://docs.openshift.com/container-platform/4.8/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli-brew_cli-developer-commands")
 
 	err = helpers.InstallFromHomeBrew("openshift-cli")
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
