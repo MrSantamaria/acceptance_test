@@ -12,22 +12,30 @@ COPY . .
 RUN go env
 
 # Build the Go application
-RUN go build -o /app/acceptance-test
+RUN go build -o /acceptance-test
 
 ### STAGE 2: Grab oc binary ###
-FROM image-registry.openshift-image-registry.svc:5000/openshift/cli:latest as oc
+FROM alpine:latest AS downloader
+
+WORKDIR /tmp
+
+# Use wget to download the tar.gz file
+RUN wget -O openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz
+
+# Untar the downloaded tar.gz file
+RUN tar -xzvf openshift-client-linux.tar.gz
 
 ### STAGE 3: Final ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 # Copy the Go binary from the build stage to the final image
-COPY --from=build /app/acceptance-test .
+COPY --from=build /acceptance-test .
 
-# Copy the oc binary from the build stage to the final image
-COPY --from=oc /usr/bin/oc /usr/bin/oc
+# Copy the extracted binary from Stage 2 to /usr/local/bin in the final image
+COPY --from=downloader /tmp/oc /usr/local/bin/oc
 
-# Creates the directory for the ocm config file
-RUN mkdir -p /.config/ocm && chmod -R 775 /.config
+RUN chmod +x /acceptance-test
+RUN chmod +x /usr/local/bin/oc
 
 # Run the Go application when the container starts
 CMD ["./acceptance-test"]
