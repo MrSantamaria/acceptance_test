@@ -36,6 +36,10 @@ COPY --from=downloader /tmp/oc /usr/local/bin/oc
 
 RUN chmod +x /acceptance-test
 RUN chmod +x /usr/local/bin/oc
+RUN mkdir /.vscode-server
+RUN mkdir /.vscode-server-insiders
+RUN chmod 777 /.vscode-server
+RUN chmod 777 /.vscode-server-insiders
 
 # Run the Go application when the container starts
 CMD ["./acceptance-test"]
