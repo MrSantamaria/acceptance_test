@@ -1,4 +1,4 @@
-package ocCli
+package oc
 
 import (
 	"bytes"
@@ -9,8 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/MrSantamaria/acceptance_test/pkg/helpers"
 )
 
 type ClusterServiceVersion struct {
@@ -47,8 +45,23 @@ type ClusterDeployment struct {
 	// Add other fields as needed
 }
 
-func GetClusterServiceVersionPhaseVersionShortSha(ctx context.Context, operatorName string) (string, string, string, error) {
-	cmd := exec.CommandContext(ctx,
+func CliCheck() bool {
+	cmd := exec.Command("oc")
+	err := cmd.Run()
+
+	if err == nil {
+		return true
+	}
+
+	fmt.Println("oc cli is not configured.")
+	fmt.Println("This application requires the oc cli to be installed in order to interact with the cluster(s).")
+	fmt.Println("https://docs.openshift.com/container-platform/4.13/cli_reference/openshift_cli/getting-started-cli.html")
+
+	return true
+}
+
+func GetClusterServiceVersionPhaseVersionShortSha(operatorName string) (string, string, string, error) {
+	cmd := exec.Command(
 		"oc",
 		"get",
 		"csv",
@@ -185,19 +198,4 @@ func GetClusterDeployments(ctx context.Context, labels string) ([]string, error)
 	}
 
 	return clusterDeployments, nil
-}
-
-func CliCheck() bool {
-	cmd := exec.Command("oc")
-	err := cmd.Run()
-	if err == nil {
-		return true
-	}
-
-	fmt.Println("oc is not installed, attempting to install via Homebrew")
-	fmt.Println("https://docs.openshift.com/container-platform/4.8/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli-brew_cli-developer-commands")
-
-	err = helpers.InstallFromHomeBrew("openshift-cli")
-
-	return err == nil
 }

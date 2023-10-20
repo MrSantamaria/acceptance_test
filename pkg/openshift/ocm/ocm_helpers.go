@@ -2,7 +2,6 @@ package ocm
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -30,26 +29,21 @@ type ocmClient struct {
 	*ocmsdk.Connection
 }
 
-func SetupOcmClient(ctx context.Context) (*ocmClient, error) {
-	token := ctx.Value("ocmToken").(string)
-	env := ctx.Value("env").(string)
-
-	connection, err := ocmsdk.NewConnectionBuilder().
-		URL(env).
-		Tokens(token).
-		BuildContext(ctx)
-	if err != nil {
-		return nil, err
+func CliCheck() bool {
+	cmd := exec.Command("ocm")
+	err := cmd.Run()
+	if err == nil {
+		return true
 	}
 
-	return &ocmClient{connection}, nil
+	fmt.Println("ocm cli is not configured.")
+	fmt.Println("This application requires the ocm cli to be installed for the backplane login to work.")
+	fmt.Println("https://github.com/openshift-online/ocm-cli")
+
+	return false
 }
 
-func Login(ctx context.Context, ocmBinaryPath string, token string, environment string) error {
-	// Check if the ocm binary path is empty
-	if ocmBinaryPath == "" {
-		return fmt.Errorf("ocm binary path cannot be empty")
-	}
+func Login(token string, environment string) error {
 	// Check if the token is empty
 	if token == "" {
 		return fmt.Errorf("token cannot be empty")
@@ -70,7 +64,7 @@ func Login(ctx context.Context, ocmBinaryPath string, token string, environment 
 	helpers.SetEnvVariables(fmt.Sprintf("BACKPLANE_CONFIG:%s", backplaneFile))
 
 	// Prepare the command
-	cmd := exec.CommandContext(ctx, ocmBinaryPath, "login", "--token", token, "--url", env[environment])
+	cmd := exec.Command("ocm", "login", "--token", token, "--url", env[environment])
 
 	// Create a buffer to capture the standard output and standard error of the command
 	var stdout, stderr bytes.Buffer
@@ -89,70 +83,10 @@ func Login(ctx context.Context, ocmBinaryPath string, token string, environment 
 	return nil
 }
 
-func GetManagementAndServiceClusters(ctx context.Context, ocmBinaryPath string, region, sector string) ([]string, []string, error) {
-	var stdout, stderr bytes.Buffer
-	var managementClusters, serviceClusters []string
-
-	cmd := exec.CommandContext(ctx, ocmBinaryPath,
-		"list",
-		"clusters",
-		"--parameter",
-		"search=name like '%hs-mc%'",
-		"--parameter",
-		"search=region.id = '"+region+"'",
-		"--columns", "ID",
-		"--no-headers")
-
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
-	if err != nil {
-		return nil, nil, fmt.Errorf("error executing the command: %v\nStandard Error: %s", err, stderr.String())
-	}
-
-	// Append IDs into the managementClusters slice
-	for _, id := range bytes.Split(stdout.Bytes(), []byte("\n")) {
-		if len(id) > 0 {
-			managementClusters = append(managementClusters, string(id))
-		}
-	}
-
-	// Reset the buffer
-	stdout.Reset()
-	stderr.Reset()
-
-	cmd = exec.CommandContext(ctx, ocmBinaryPath,
-		"list",
-		"clusters",
-		"--parameter",
-		"search=name like '%hs-sc%'",
-		"--parameter",
-		"search=region.id = '"+region+"'",
-		"--columns", "ID",
-		"--no-headers")
-
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err = cmd.Run()
-	if err != nil {
-		return nil, nil, fmt.Errorf("error executing the command: %v\nStandard Error: %s", err, stderr.String())
-	}
-
-	// Append IDs into the serviceClusters slice
-	for _, id := range bytes.Split(stdout.Bytes(), []byte("\n")) {
-		if len(id) > 0 {
-			serviceClusters = append(serviceClusters, string(id))
-		}
-	}
-
-	return managementClusters, serviceClusters, nil
-}
-
-func BackplaneLogin(ctx context.Context, ocmBinaryPath string, clusterIDorName string) error {
+func BackplaneLogin(clusterIDorName string) error {
 	var stdout, stderr bytes.Buffer
 
-	cmd := exec.CommandContext(ctx, ocmBinaryPath,
+	cmd := exec.Command("ocm",
 		"backplane",
 		"login",
 		clusterIDorName)
@@ -174,5 +108,45 @@ func BackplaneLogin(ctx context.Context, ocmBinaryPath string, clusterIDorName s
 	}
 
 	fmt.Println("Backplane Login Successful")
+	return nil
+}
+
+func SetUpOcmBinary() error {
+	repoOwner, repoName := "openshift-online", "ocm-cli"
+	// Get the latest release of the ocm-cli
+	release, err := helpers.GetLatestRelease(repoOwner, repoName)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
+	selectedURL, err := helpers.SelectVersionByRuntime(release)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
+	// Extract the file name from the URL to use as the local file name
+	tokens := strings.Split(selectedURL, "/")
+	fileName := tokens[len(tokens)-1]
+
+	ocmBinaryPath, err := helpers.DownloadRelease(selectedURL, fileName)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
+	err = helpers.SetupBinary(ocmBinaryPath)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
+	err = helpers.CheckBinary(ocmBinaryPath)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
 	return nil
 }

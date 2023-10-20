@@ -89,36 +89,3 @@ func CheckBinary(binaryPath string) error {
 
 	return nil
 }
-
-func checkBrewInstalled() bool {
-	cmd := exec.Command("brew", "--version")
-	err := cmd.Run()
-	if err != nil {
-		return false
-	}
-	return true
-}
-
-func InstallFromHomeBrew(packageName string) error {
-
-	if !checkBrewInstalled() {
-		return fmt.Errorf("brew is not installed")
-	}
-
-	cmd := exec.Command("brew", "install", packageName)
-
-	// Set the appropriate environment variables for the command to run successfully
-	cmd.Env = os.Environ()
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Printf("Installing %s using brew\n", packageName)
-
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("failed to install openshift-cli: %v", err)
-	}
-
-	fmt.Println("openshift-cli installed successfully")
-	return nil
-}
