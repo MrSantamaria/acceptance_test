@@ -26,7 +26,8 @@ RUN wget -O openshift-client-linux.tar.gz https://mirror.openshift.com/pub/opens
 RUN tar -xzvf openshift-client-linux.tar.gz
 
 ### STAGE 3: Final ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+#FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+FROM ubuntu:latest
 
 # Copy the Go binary from the build stage to the final image
 COPY --from=build /acceptance-test .
