@@ -24,7 +24,7 @@ func (r *RunConfig) InitRunConfig() error {
 		ocmToken := flag.String("token", "", "OCM Token")
 		environment := flag.String("environment", "", "Environment")
 		namespace := flag.String("namespace", "", "Namespace")
-		operatorName := flag.String("operator", "", "Operator Name")
+		operatorName := flag.String("operatorName", "", "Operator Name")
 		pairedSSS := flag.String("pairedSss", "", "Paired SSS")
 		imageTag := flag.String("imageTag", "", "Image Tag")
 
@@ -40,7 +40,7 @@ func (r *RunConfig) InitRunConfig() error {
 			*namespace = os.Getenv("NAMESPACE")
 		}
 		if *operatorName == "" {
-			*operatorName = os.Getenv("OPERATOR")
+			*operatorName = os.Getenv("OPERATOR_NAME")
 		}
 		if *pairedSSS == "" {
 			*pairedSSS = os.Getenv("PAIRED_SSS")
