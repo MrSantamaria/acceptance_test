@@ -4,29 +4,26 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MrSantamaria/acceptance_test/pkg/helpers"
 	"github.com/MrSantamaria/acceptance_test/workflows"
 )
 
 func main() {
 
-	args := helpers.RunConfig
-
-	err := workflows.SetUp()
+	config, err := workflows.SetUp()
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error while setting up:", err)
 		return
 	}
 
 	err = workflows.ValidateRequirements()
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error while validating requirements:", err)
 		return
 	}
 
-	err = workflows.AcceptanceTest(args.OCM_TOKEN, args.ENVIRONMENT, args.NAMESPACE, args.OPERATOR_NAME, args.PAIRED_SSS, args.IMAGE_TAG)
+	err = workflows.AcceptanceTest(config.GetOCMToken(), config.GetEnvironment(), config.GetNamespace(), config.GetOperatorName(), config.GetPairedSSS(), config.GetImageTag())
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error while running acceptance test:", err)
 		os.Exit(1)
 	}
 

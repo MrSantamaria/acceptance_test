@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-type runConfig struct {
+type RunConfig struct {
 	OCM_TOKEN     string
 	ENVIRONMENT   string
 	NAMESPACE     string
@@ -17,9 +17,7 @@ type runConfig struct {
 	once          sync.Once
 }
 
-var RunConfig *runConfig
-
-func (r *runConfig) InitRunConfig() error {
+func (r *RunConfig) InitRunConfig() error {
 	var err error
 
 	r.once.Do(func() {
@@ -67,6 +65,26 @@ func (r *runConfig) InitRunConfig() error {
 	return err
 }
 
-func GetRunConfig() *runConfig {
-	return RunConfig
+func (r *RunConfig) GetOCMToken() string {
+	return r.OCM_TOKEN
+}
+
+func (r *RunConfig) GetEnvironment() string {
+	return r.ENVIRONMENT
+}
+
+func (r *RunConfig) GetNamespace() string {
+	return r.NAMESPACE
+}
+
+func (r *RunConfig) GetOperatorName() string {
+	return r.OPERATOR_NAME
+}
+
+func (r *RunConfig) GetPairedSSS() string {
+	return r.PAIRED_SSS
+}
+
+func (r *RunConfig) GetImageTag() string {
+	return r.IMAGE_TAG
 }

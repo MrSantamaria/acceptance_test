@@ -8,20 +8,23 @@ import (
 	"github.com/MrSantamaria/acceptance_test/pkg/openshift/ocm"
 )
 
-func SetUp() error {
-	err := helpers.RunConfig.InitRunConfig()
+func SetUp() (*helpers.RunConfig, error) {
+	config := &helpers.RunConfig{}
+	err := config.InitRunConfig()
 	if err != nil {
-		return err
+		fmt.Println("Error:", err)
+		return nil, err
 	}
 
 	if !ocm.CliCheck() {
 		err = ocm.SetUpOcmBinary()
 		if err != nil {
-			return err
+			fmt.Println("Error:", err)
+			return nil, err
 		}
 	}
 
-	return nil
+	return config, nil
 }
 
 func ValidateRequirements() error {
