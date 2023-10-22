@@ -21,11 +21,10 @@ WORKDIR /tmp
 
 # Use wget to download the tar.gz file
 RUN wget -O openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz
-RUN wget -O ocm-linux.tar.gz https://github.com/openshift-online/ocm-cli/releases/download/v0.1.70/ocm-linux-amd64
+RUN wget -O ocm https://github.com/openshift-online/ocm-cli/releases/download/v0.1.70/ocm-linux-amd64
 
 # Untar the downloaded tar.gz file
 RUN tar -xzvf openshift-client-linux.tar.gz
-RUN tar -xzvf ocm-linux.tar.gz
 
 ### STAGE 3: Final ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
