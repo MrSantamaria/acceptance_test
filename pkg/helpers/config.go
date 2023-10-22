@@ -25,7 +25,7 @@ func (r *RunConfig) InitRunConfig() error {
 		environment := flag.String("environment", "", "Environment")
 		namespace := flag.String("namespace", "", "Namespace")
 		operatorName := flag.String("operator", "", "Operator Name")
-		pairedSSS := flag.String("sss", "", "Paired SSS")
+		pairedSSS := flag.String("pairedSss", "", "Paired SSS")
 		imageTag := flag.String("imageTag", "", "Image Tag")
 
 		flag.Parse()
@@ -43,7 +43,7 @@ func (r *RunConfig) InitRunConfig() error {
 			*operatorName = os.Getenv("OPERATOR")
 		}
 		if *pairedSSS == "" {
-			*pairedSSS = os.Getenv("SSS")
+			*pairedSSS = os.Getenv("PAIRED_SSS")
 		}
 		if *imageTag == "" {
 			*imageTag = os.Getenv("IMAGE_TAG")
