@@ -1,0 +1,4 @@
+{
+    "url": "https://api.integration.backplane.devshift.net",
+    "proxy-url": "http://squid.corp.redhat.com:3128"
+}

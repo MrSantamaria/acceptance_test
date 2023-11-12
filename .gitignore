@@ -1,0 +1,13 @@
+# editor metadata
+.vscode/
+
+# macOS
+.DS_Store
+
+# Ignore any yaml in the base directory
+*.yml
+
+# Ignore any files in the base directory added for testing
+kubeconfig
+*.json
+*.yaml

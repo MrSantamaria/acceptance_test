@@ -1,0 +1,4 @@
+{
+    "url": "https://api.stage.backplane.openshift.com",
+    "proxy-url": "http://squid.corp.redhat.com:3128"
+}
