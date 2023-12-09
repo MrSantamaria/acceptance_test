@@ -14,7 +14,7 @@ RUN go env
 # Build the Go application
 RUN go build -o /acceptance-test
 
-### STAGE 2: Grab oc binary ###
+### STAGE 2: Download needed binaries ###
 FROM alpine:latest AS downloader
 
 WORKDIR /tmp
@@ -22,6 +22,7 @@ WORKDIR /tmp
 # Use wget to download the tar.gz file
 RUN wget -O openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz
 RUN wget -O ocm https://github.com/openshift-online/ocm-cli/releases/download/v0.1.70/ocm-linux-amd64
+RUN go install github.com/observatorium/obsctl@main
 
 # Untar the downloaded tar.gz file
 RUN tar -xzvf openshift-client-linux.tar.gz
@@ -35,10 +36,12 @@ COPY --from=build /acceptance-test .
 # Copy the extracted binary from Stage 2 to /usr/local/bin in the final image
 COPY --from=downloader /tmp/oc /usr/local/bin/oc
 COPY --from=downloader /tmp/ocm /usr/local/bin/ocm
+COPY --from=downloader /go/bin/obsctl /usr/local/bin/obsctl
 
 RUN chmod +x /acceptance-test
 RUN chmod +x /usr/local/bin/oc
 RUN chmod +x /usr/local/bin/ocm
+RUN chmod +x /usr/local/bin/obsctl
 
 # Run the Go application when the container starts
 CMD ["./acceptance-test"]

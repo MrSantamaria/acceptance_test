@@ -184,6 +184,8 @@ func createOCMSelectors(selectors []string) (string, string, error) {
 			sectorSelector = trimmedSelector
 			continue
 		}
+
+		fmt.Printf("Selector %s is not a valid AWS region or Openshift sector\nWe will ignore it for now. Reach out the SD-CICADA team if this shouldn't be the case\n", trimmedSelector)
 	}
 
 	if regionSelector == "" || sectorSelector == "" {

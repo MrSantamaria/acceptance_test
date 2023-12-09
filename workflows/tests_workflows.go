@@ -14,8 +14,6 @@ func AcceptanceTest() error {
 		return err
 	}
 
-	// All clusters on [0] are management clusters
-	// All clusters on [1] are service clusters
 	// Print the clusterIDs
 	fmt.Printf("ClusterIDs: %+v\n", clusterIDs)
 

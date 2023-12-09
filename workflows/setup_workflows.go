@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MrSantamaria/acceptance_test/pkg/openshift/ocm"
+	"github.com/MrSantamaria/acceptance_test/pkg/openshift/telemeter"
 	"github.com/spf13/viper"
 )
 
@@ -15,12 +16,27 @@ func SetUp(ocmToken, environment string) error {
 		errs = append(errs, fmt.Errorf("ocm-cli is not installed"))
 	}
 
+	if !telemeter.CliCheck() {
+		errs = append(errs, fmt.Errorf("obsctl is not installed"))
+	}
+
 	err = validateRequiredVars()
 	if err != nil {
 		errs = append(errs, err)
 	}
 
 	err = ocm.Login(ocmToken, environment)
+	if err != nil {
+		errs = append(errs, err)
+	}
+
+	err = telemeter.AddObsctlContext(telemeter.GetObsctlConfig().ContextName, telemeter.GetObsctlConfig().ContextApi)
+	if err != nil {
+		errs = append(errs, err)
+	}
+
+	// Next Step fix this function.
+	err = telemeter.ObsctlLogin(telemeter.GetObsctlConfig().ContextName, telemeter.GetObsctlConfig().OidcAudience, telemeter.GetObsctlConfig().OidcClientID, telemeter.GetObsctlConfig().OidcClientSecret, telemeter.GetObsctlConfig().OidcIssuerURL, telemeter.GetObsctlConfig().OidcOfflineAccess, telemeter.GetObsctlConfig().Tenant)
 	if err != nil {
 		errs = append(errs, err)
 	}
@@ -57,6 +73,14 @@ func validateRequiredVars() error {
 			errs = append(errs, fmt.Errorf("imagetag is required"))
 		}
 	*/
+
+	if len(viper.GetString("telemeterClientID")) == 0 {
+		errs = append(errs, fmt.Errorf("telemeterClientID is required"))
+	}
+
+	if len(viper.GetString("telemeterSecret")) == 0 {
+		errs = append(errs, fmt.Errorf("telemeterSecret is required"))
+	}
 
 	if len(errs) > 0 {
 		return fmt.Errorf("failed to validate required vars: %v", errs)
