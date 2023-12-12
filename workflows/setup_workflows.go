@@ -30,19 +30,15 @@ func SetUp(ocmToken, environment string) error {
 		errs = append(errs, err)
 	}
 
-	err = telemeter.AddObsctlContext(telemeter.GetObsctlConfig().ContextName, telemeter.GetObsctlConfig().ContextApi)
-	if err != nil {
-		errs = append(errs, err)
-	}
-
-	// Next Step fix this function.
-	err = telemeter.ObsctlLogin(telemeter.GetObsctlConfig().ContextName, telemeter.GetObsctlConfig().OidcAudience, telemeter.GetObsctlConfig().OidcClientID, telemeter.GetObsctlConfig().OidcClientSecret, telemeter.GetObsctlConfig().OidcIssuerURL, telemeter.GetObsctlConfig().OidcOfflineAccess, telemeter.GetObsctlConfig().Tenant)
+	// TODO: Update how I'm handling the telemeter config to be pointer based
+	telemeterConfig := telemeter.SetObsctlConfig(viper.GetString("environment"))
+	err = telemeter.ObsctlLogin(telemeterConfig)
 	if err != nil {
 		errs = append(errs, err)
 	}
 
 	if len(errs) > 0 {
-		return fmt.Errorf("Acceptance Test Setup Failed: %v", errs)
+		return fmt.Errorf("Acceptance Test setup failed: %v", errs)
 	}
 
 	return nil
@@ -74,12 +70,12 @@ func validateRequiredVars() error {
 		}
 	*/
 
-	if len(viper.GetString("telemeterClientID")) == 0 {
-		errs = append(errs, fmt.Errorf("telemeterClientID is required"))
+	if len(viper.GetString("TELEMETER_CLIENT_ID")) == 0 {
+		errs = append(errs, fmt.Errorf("TELEMETER_CLIENT_ID env is required"))
 	}
 
-	if len(viper.GetString("telemeterSecret")) == 0 {
-		errs = append(errs, fmt.Errorf("telemeterSecret is required"))
+	if len(viper.GetString("TELEMETER_SECRET")) == 0 {
+		errs = append(errs, fmt.Errorf("TELEMETER_SECRET env is required"))
 	}
 
 	if len(errs) > 0 {

@@ -15,8 +15,9 @@ func InitEnv(rootCmd *cobra.Command) {
 	rootCmd.PersistentFlags().String("operator", "", "operatorName")
 	rootCmd.PersistentFlags().StringSliceVar(&selectors, "selectors", nil, "comma-separated list of cluster deployment selectors")
 	rootCmd.PersistentFlags().String("imagetag", "", "Image Tag")
-	rootCmd.PersistentFlags().String("telemeterClientID", "", "Telemeter Client ID")
-	rootCmd.PersistentFlags().String("telemeterSecret", "", "Telemeter Client Secret")
+	rootCmd.PersistentFlags().String("telemeterClientID", "", "TELEMETER_CLIENT_ID")
+	rootCmd.PersistentFlags().String("telemeterSecret", "", "TELEMETER_SECRET")
+	rootCmd.PersistentFlags().String("telemeterSearchTime", "1m", "TELEMETER_SEARCH_TIME")
 
 	viper.BindPFlag("token", rootCmd.PersistentFlags().Lookup("token"))
 	viper.BindPFlag("environment", rootCmd.PersistentFlags().Lookup("env"))
@@ -25,6 +26,7 @@ func InitEnv(rootCmd *cobra.Command) {
 	viper.BindPFlag("imagetag", rootCmd.PersistentFlags().Lookup("imagetag"))
 	viper.BindPFlag("telemeterClientID", rootCmd.PersistentFlags().Lookup("telemeterClientID"))
 	viper.BindPFlag("telemeterSecret", rootCmd.PersistentFlags().Lookup("telemeterSecret"))
+	viper.BindPFlag("telemeterSearchTime", rootCmd.PersistentFlags().Lookup("telemeterSearchTime"))
 
 	viper.AutomaticEnv()
 }

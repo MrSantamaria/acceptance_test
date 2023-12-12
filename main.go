@@ -15,17 +15,29 @@ var rootCmd = &cobra.Command{
 	Short: "acceptance_test is a component of the Hypershift Operator Promotion process",
 	Long:  `acceptance_test is a tool used to validate Hypershift Operator Promotions ocurred successfully`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var errs []error
 		var err error
 
 		err = workflows.SetUp(viper.GetString("token"), viper.GetString("environment"))
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			errs = append(errs, err)
 		}
 
 		err = workflows.AcceptanceTest()
 		if err != nil {
 			fmt.Println(err)
+			errs = append(errs, err)
+		}
+
+		err = workflows.CleanUp()
+		if err != nil {
+			fmt.Println(err)
+			errs = append(errs, err)
+		}
+
+		if len(errs) > 0 {
+			fmt.Println("ERROR: Acceptance Test failed")
 			os.Exit(1)
 		}
 	},

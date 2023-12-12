@@ -125,6 +125,21 @@ func GetManagementAndServiceClusterIDs() ([]string, error) {
 	return clusterIDs, nil
 }
 
+func TransformClusterIDsToOperationIDs(clusterIDs []string) ([]string, error) {
+	var operationIDs []string
+
+	for _, clusterID := range clusterIDs {
+		operationID, err := getOperationIdFromClusterId(clusterID)
+		if err != nil {
+			return nil, err
+		}
+
+		operationIDs = append(operationIDs, operationID)
+	}
+
+	return operationIDs, nil
+}
+
 func parseJsonDataForClusterIDs(jsonData, clusterKind string) ([]string, error) {
 	var data map[string]interface{}
 	var clusterIDs []string
@@ -193,4 +208,26 @@ func createOCMSelectors(selectors []string) (string, string, error) {
 	}
 
 	return regionSelector, sectorSelector, nil
+}
+
+func getOperationIdFromClusterId(clusterId string) (string, error) {
+	var stdout, stderr bytes.Buffer
+
+	cmd := exec.Command("ocm", "get", "cluster", clusterId)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("error executing ocm get cluster: %v\nStandard Error: %s", err, stderr.String())
+	}
+
+	// operationId, err := stdout.ReadString(
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	operationId := strings.TrimSpace(stdout.String())
+
+	return operationId, nil
 }
