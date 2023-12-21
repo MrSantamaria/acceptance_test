@@ -84,24 +84,20 @@ func Login(token string, environment string) error {
 		return fmt.Errorf("env %s is not a valid environment", environment)
 	}
 
-	// Create the config file needed for backplane operations
 	backplaneFile, err := helpers.CopyFileToCurrentDir(assets.Assets, backplaneConfig[environment])
 	if err != nil {
 		return err
 	}
 
-	// Set the BACKPLANE_CONFIG environment variable
 	helpers.SetEnvVariables(fmt.Sprintf("BACKPLANE_CONFIG:%s", backplaneFile))
 
-	// Prepare the command
 	cmd := exec.Command("ocm", "login", "--token", token, "--url", env[environment])
 
-	// Create a buffer to capture the standard output and standard error of the command
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
-	// Execute the command
+	fmt.Printf("Logging in to OCM for %s environment\n", environment)
 	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("error executing ocm login using token: %v\nStandard Error: %s", err, stderr.String())
@@ -122,6 +118,7 @@ func GetManagementAndServiceClusterIDs() ([]string, error) {
 	cmdManagement.Stdout = &stdoutManagement
 	cmdManagement.Stderr = &stderrManagement
 
+	fmt.Printf("Running command: %s\n", cmdManagement.Args)
 	err := cmdManagement.Run()
 	if err != nil {
 		return nil, fmt.Errorf("error executing ocm get management clusters: %v\nStandard Error: %s", err, stderrManagement.String())
@@ -139,6 +136,7 @@ func GetManagementAndServiceClusterIDs() ([]string, error) {
 	cmdService.Stdout = &stdoutService
 	cmdService.Stderr = &stderrService
 
+	fmt.Printf("Running command: %s\n", cmdService.Args)
 	err = cmdService.Run()
 	if err != nil {
 		return nil, fmt.Errorf("error executing ocm get service clusters: %v\nStandard Error: %s", err, stderrService.String())
@@ -165,6 +163,7 @@ func GetExternalIdFromClusterId(clusterIds []string) ([]string, error) {
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
 
+		fmt.Printf("Running command: %s\n", cmd.Args)
 		err := cmd.Run()
 		if err != nil {
 			return clusterExternalIds, fmt.Errorf("error executing ocm describe cluster: %v\nStandard Error: %s", err, stderr.String())
