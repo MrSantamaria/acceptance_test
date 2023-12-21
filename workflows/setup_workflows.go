@@ -59,16 +59,13 @@ func validateRequiredVars() error {
 		errs = append(errs, fmt.Errorf("selectors are required"))
 	}
 
-	/*
+	if len(viper.GetString("operator")) == 0 {
+		errs = append(errs, fmt.Errorf("operator is required"))
+	}
 
-		if len(viper.GetString("operator")) == 0 {
-			errs = append(errs, fmt.Errorf("operator is required"))
-		}
-
-		if len(viper.GetString("imagetag")) == 0 {
-			errs = append(errs, fmt.Errorf("imagetag is required"))
-		}
-	*/
+	if len(viper.GetString("imagetag")) == 0 {
+		errs = append(errs, fmt.Errorf("imagetag is required"))
+	}
 
 	if len(viper.GetString("TELEMETER_CLIENT_ID")) == 0 {
 		errs = append(errs, fmt.Errorf("TELEMETER_CLIENT_ID env is required"))

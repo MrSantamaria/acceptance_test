@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
 
 	"github.com/MrSantamaria/acceptance_test/pkg/assets"
@@ -24,6 +25,34 @@ var (
 		"stage": "config.stage.json",
 		"prod":  "config.prod.json"}
 )
+
+// Cluster represents the structure of the JSON data
+type Cluster struct {
+	Kind  string `json:"kind"`
+	Page  int    `json:"page"`
+	Size  int    `json:"size"`
+	Total int    `json:"total"`
+	Items []Item `json:"items"`
+}
+
+// Item represents the structure of the "items" array in the JSON data
+type Item struct {
+	ID                         string                     `json:"id"`
+	Kind                       string                     `json:"kind"`
+	Href                       string                     `json:"href"`
+	Name                       string                     `json:"name"`
+	Status                     string                     `json:"status"`
+	CloudProvider              string                     `json:"cloud_provider"`
+	Region                     string                     `json:"region"`
+	Sector                     string                     `json:"sector"` // Assuming you have "sector" field in your JSON
+	ClusterManagementReference ClusterManagementReference `json:"cluster_management_reference"`
+}
+
+// ClusterManagementReference represents the structure of the "cluster_management_reference" field in the JSON data
+type ClusterManagementReference struct {
+	ClusterID string `json:"cluster_id"`
+	Href      string `json:"href"`
+}
 
 // OCM is a wrapper around the OCM client.
 type ocmClient struct {
@@ -125,64 +154,71 @@ func GetManagementAndServiceClusterIDs() ([]string, error) {
 	return clusterIDs, nil
 }
 
-func TransformClusterIDsToOperationIDs(clusterIDs []string) ([]string, error) {
-	var operationIDs []string
+func GetExternalIdFromClusterId(clusterIds []string) ([]string, error) {
+	// The stdout of the ocm describe cluster $id command does not output a json, we will use a regex to parse the output
+	var stdout, stderr bytes.Buffer
+	var clusterExternalIds []string
+	re := regexp.MustCompile(`External ID:\s+(\S+)`)
 
-	for _, clusterID := range clusterIDs {
-		operationID, err := getOperationIdFromClusterId(clusterID)
+	for _, id := range clusterIds {
+		cmd := exec.Command("ocm", "describe", "cluster", id)
+		cmd.Stdout = &stdout
+		cmd.Stderr = &stderr
+
+		err := cmd.Run()
 		if err != nil {
-			return nil, err
+			return clusterExternalIds, fmt.Errorf("error executing ocm describe cluster: %v\nStandard Error: %s", err, stderr.String())
 		}
 
-		operationIDs = append(operationIDs, operationID)
+		match := re.FindStringSubmatch(stdout.String())
+		// Check if there is a line matching the regex
+		// If there is a match 'External ID' will be in match[0] and the external id will be in match[1]
+		if len(match) == 2 {
+			externalID := match[1]
+			clusterExternalIds = append(clusterExternalIds, externalID)
+		} else {
+			fmt.Println("External ID not found.")
+		}
+
+		// Resets the buffer otherwise the next iteration will append to the previous stds
+		stdout.Reset()
+		stderr.Reset()
 	}
 
-	return operationIDs, nil
+	return clusterExternalIds, nil
 }
 
 func parseJsonDataForClusterIDs(jsonData, clusterKind string) ([]string, error) {
-	var data map[string]interface{}
+	var cluster Cluster
 	var clusterIDs []string
+
 	regionSelector, sectorSelector, err := createOCMSelectors(viper.GetStringSlice("selectors"))
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.NewDecoder(strings.NewReader(jsonData)).Decode(&data)
+	err = json.NewDecoder(strings.NewReader(jsonData)).Decode(&cluster)
 	if err != nil {
 		return nil, err
 	}
 
-	items, ok := data["items"].([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("error accessing 'items' array")
-	}
-
-	for _, item := range items {
-		itemMap, ok := item.(map[string]interface{})
-		if !ok {
-			fmt.Println("Error accessing item in 'items' array")
+	for _, item := range cluster.Items {
+		if item.Region != regionSelector {
 			continue
 		}
 
-		region, regionExists := itemMap["region"].(string)
-		if region != regionSelector && regionExists {
-			continue
-		}
-		sector, sectorExists := itemMap["sector"].(string)
-		if sector != sectorSelector && sectorExists {
-			continue
-		}
-		kind, kindExists := itemMap["kind"].(string)
-		if kind != clusterKind && kindExists {
+		if item.Sector != sectorSelector {
 			continue
 		}
 
-		clusterIDs = append(clusterIDs, itemMap["id"].(string))
+		if item.Kind != clusterKind {
+			continue
+		}
+
+		clusterIDs = append(clusterIDs, item.ClusterManagementReference.ClusterID)
 	}
 
 	return clusterIDs, nil
-
 }
 
 // Create OCM selectors based on AWS regions and Openshift sectors
@@ -208,26 +244,4 @@ func createOCMSelectors(selectors []string) (string, string, error) {
 	}
 
 	return regionSelector, sectorSelector, nil
-}
-
-func getOperationIdFromClusterId(clusterId string) (string, error) {
-	var stdout, stderr bytes.Buffer
-
-	cmd := exec.Command("ocm", "get", "cluster", clusterId)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
-	if err != nil {
-		return "", fmt.Errorf("error executing ocm get cluster: %v\nStandard Error: %s", err, stderr.String())
-	}
-
-	// operationId, err := stdout.ReadString(
-	// if err != nil {
-	// 	return "", err
-	// }
-
-	operationId := strings.TrimSpace(stdout.String())
-
-	return operationId, nil
 }

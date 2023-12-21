@@ -17,7 +17,7 @@ func InitEnv(rootCmd *cobra.Command) {
 	rootCmd.PersistentFlags().String("imagetag", "", "Image Tag")
 	rootCmd.PersistentFlags().String("telemeterClientID", "", "TELEMETER_CLIENT_ID")
 	rootCmd.PersistentFlags().String("telemeterSecret", "", "TELEMETER_SECRET")
-	rootCmd.PersistentFlags().String("telemeterSearchTime", "1m", "TELEMETER_SEARCH_TIME")
+	rootCmd.PersistentFlags().String("telemeterSearchTime", "10m", "TELEMETER_SEARCH_TIME")
 
 	viper.BindPFlag("token", rootCmd.PersistentFlags().Lookup("token"))
 	viper.BindPFlag("environment", rootCmd.PersistentFlags().Lookup("env"))

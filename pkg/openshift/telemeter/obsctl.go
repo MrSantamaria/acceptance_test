@@ -33,6 +33,7 @@ type obsctlSearchResult struct {
 		ResultType string `json:"resultType"`
 		Result     []struct {
 			Metric struct {
+				CSV  string `json:"__name__"`
 				ID   string `json:"_id"`
 				Name string `json:"name"`
 			} `json:"metric"`
@@ -197,18 +198,16 @@ func ObsctlSearchQuery(searchQuery string) (obsctlSearchResult, error) {
 	return obsctlSearchResult, nil
 }
 
-func ObsctlProccessSearchResult(searchResult obsctlSearchResult, clusterIds []string) int {
+func ObsctlProccessSearchResult(searchResult obsctlSearchResult) int {
 	var csvCount int
 
 	// TODO: Rewrite this to be more efficient
 	for _, result := range searchResult.Data.Result {
-		for _, value := range result.Values {
-			if value[1] == "csv_succeeded" {
-				csvCount++
-			}
-			if value[1] == "csv_abnormal" {
-				csvCount++
-			}
+		if result.Metric.CSV == "csv_succeeded" {
+			csvCount++
+		}
+		if result.Metric.CSV == "csv_abnormal" {
+			csvCount++
 		}
 	}
 

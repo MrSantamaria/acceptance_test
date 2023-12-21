@@ -37,7 +37,11 @@ var rootCmd = &cobra.Command{
 		}
 
 		if len(errs) > 0 {
-			fmt.Println("ERROR: Acceptance Test failed")
+			fmt.Printf("Acceptance Test FAILED for: %s %s environment: %s selectors: %v\n",
+				viper.GetString("operator"),
+				viper.GetString("imagetag"),
+				viper.GetString("environment"),
+				viper.GetStringSlice("selectors"))
 			os.Exit(1)
 		}
 	},
