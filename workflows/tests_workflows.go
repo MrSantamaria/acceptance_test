@@ -30,7 +30,7 @@ func AcceptanceTest() error {
 
 	for _, clusterID := range clusterExternalIDs {
 
-		searchResults, err := telemeter.ObsctlSearchQuery("csv_succeeded{_id=\"" + clusterID + "\",	name=~\"" + viper.GetString("operator") + ".*" + viper.GetString("imagetag") + "\"}[" + viper.GetString("telemeterSearchTime") + "]")
+		searchResults, err := telemeter.ObsctlSearchQuery("csv_succeeded{_id=\"" + clusterID + "\", name=~\"" + viper.GetString("operator") + ".*" + viper.GetString("imagetag") + "\"}[" + viper.GetString("telemeterSearchTime") + "]")
 		if err != nil {
 			return err
 		}
