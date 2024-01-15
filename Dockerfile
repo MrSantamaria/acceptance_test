@@ -28,6 +28,10 @@ RUN microdnf install shadow-utils
 RUN mkdir /app && \
     chmod 755 /app
 
+# Create a writable .config directory for the non-root user
+RUN mkdir /app/.config && \
+    chmod 777 /app/.config
+
 # Copy the Go binary from the build stage to the final image
 COPY --from=build /acceptance-test /app/acceptance-test
 
