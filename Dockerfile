@@ -2,7 +2,7 @@
 FROM registry.ci.openshift.org/openshift/release:golang-1.19 AS build
 
 ENV GOFLAGS=
-ENV PKG=/go/src/github.com/openshift/acceptance-test
+ENV PKG=/go/src/github.com/MrSantamaria/acceptance-test
 WORKDIR ${PKG}
 
 # Install needed binaries
