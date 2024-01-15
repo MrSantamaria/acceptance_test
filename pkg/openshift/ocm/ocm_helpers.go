@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -82,6 +84,14 @@ func Login(token string, environment string) error {
 	// Check if the specified environment is valid
 	if _, ok := env[environment]; !ok {
 		return fmt.Errorf("env %s is not a valid environment", environment)
+	}
+
+	//debug
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Printf("Error getting working directory: %v", err)
+	} else {
+		log.Printf("Current working directory: %s", wd)
 	}
 
 	backplaneFile, err := helpers.CopyFileToCurrentDir(assets.Assets, backplaneConfig[environment])
