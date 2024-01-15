@@ -2,7 +2,7 @@
 FROM registry.ci.openshift.org/openshift/release:golang-1.19 AS build
 
 ENV GOFLAGS=
-ENV PKG=/go/src/github.com/MrSantamaria/acceptance-test
+ENV PKG=/go/src/github.com/openshift/acceptance-test
 WORKDIR ${PKG}
 
 # Install needed binaries
@@ -40,7 +40,7 @@ RUN chmod +x /usr/local/bin/ocm
 RUN chmod +x /usr/local/bin/obsctl
 
 # Create a non-root user and group and switch to it
-RUN adduser -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
+RUN useradd -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
 USER 1001
 
 # Run the Go application when the container starts
