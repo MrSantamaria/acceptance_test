@@ -48,7 +48,7 @@ func validateRequiredVars() error {
 	var errs []error
 
 	if len(viper.GetString("token")) == 0 {
-		errs = append(errs, fmt.Errorf("token is required"))
+		errs = append(errs, fmt.Errorf("ocm token is required"))
 	}
 
 	if len(viper.GetString("environment")) == 0 {
@@ -65,10 +65,6 @@ func validateRequiredVars() error {
 
 	if len(viper.GetString("imagetag")) == 0 {
 		errs = append(errs, fmt.Errorf("imagetag is required"))
-	}
-
-	if len(viper.GetString("OCM_TOKEN")) == 0 {
-		errs = append(errs, fmt.Errorf("OCM_TOKEN env is required"))
 	}
 
 	if len(viper.GetString("TELEMETER_CLIENT_ID")) == 0 {
