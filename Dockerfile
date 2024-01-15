@@ -18,6 +18,9 @@ RUN go env
 # Build the Go application
 RUN go build -o /acceptance-test
 
+### STAGE 1: Build ###
+# ... [your existing Stage 1 content] ...
+
 ### STAGE 2: Final ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
@@ -25,12 +28,10 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 RUN microdnf install shadow-utils
 
 # Create a directory for your application and set proper permissions
-RUN mkdir /app && \
-    chmod 755 /app
+RUN mkdir /app && chmod 755 /app
 
-# Create a writable .config directory for the non-root user
-RUN mkdir /app/.config && \
-    chmod 777 /app/.config
+# Create the .config directory at the root and set permissions
+RUN mkdir /.config && chmod 777 /.config
 
 # Copy the Go binary from the build stage to the final image
 COPY --from=build /acceptance-test /app/acceptance-test
@@ -49,8 +50,8 @@ RUN chmod +x /usr/local/bin/obsctl
 # Create a non-root user and group
 RUN useradd -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
 
-# Change the ownership of the /app directory to the non-root user
-RUN chown -R 1001:0 /app
+# Change the ownership of the /app directory and /.config to the non-root user
+RUN chown -R 1001:0 /app /.config
 
 # Switch to the non-root user
 USER 1001
