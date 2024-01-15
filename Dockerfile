@@ -24,8 +24,9 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 # Install shadow-utils to get the useradd command
 RUN microdnf install shadow-utils
 
-# Create a directory for your application
-RUN mkdir /app && chmod 755 /app
+# Create a directory for your application and set proper permissions
+RUN mkdir /app && \
+    chmod 755 /app
 
 # Copy the Go binary from the build stage to the final image
 COPY --from=build /acceptance-test /app/acceptance-test
@@ -41,8 +42,13 @@ COPY --from=build /go/bin/obsctl /usr/local/bin/obsctl
 RUN chmod +x /usr/local/bin/ocm
 RUN chmod +x /usr/local/bin/obsctl
 
-# Create a non-root user and group and switch to it
+# Create a non-root user and group
 RUN useradd -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
+
+# Change the ownership of the /app directory to the non-root user
+RUN chown -R 1001:0 /app
+
+# Switch to the non-root user
 USER 1001
 
 # Set the working directory in the final image
