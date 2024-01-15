@@ -48,13 +48,13 @@ RUN chmod +x /usr/local/bin/ocm
 RUN chmod +x /usr/local/bin/obsctl
 
 # Create a non-root user and group
-RUN useradd -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
+RUN useradd -u 1001030000 -r -g 0 -d /app -s /sbin/nologin -c "Default Application User" default
 
 # Change the ownership of the /app directory and /.config to the non-root user
-RUN chown -R 1001:0 /app /.config
+RUN chown -R 1001030000:0 /app /.config
 
 # Switch to the non-root user
-USER 1001
+USER 1001030000
 
 # Set the working directory in the final image
 WORKDIR /app
